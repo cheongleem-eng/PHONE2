@@ -3,15 +3,24 @@ let audioCtx, micSource, delayNode, feedbackGain;
 
 function playSound(id) {
     const snd = document.getElementById(id);
-    if (snd) { snd.currentTime = 0; snd.play(); }
+    if (snd) { 
+        snd.currentTime = 0; 
+        snd.play().catch(err => console.error("Error playing sound:", id, err)); 
+    }
 }
 
 function handleKeyPress(key) {
+    // 모든 버튼 클릭 시 button bgm 재생
+    playSound('snd-bgm');
+
     if (key === '2') {
         playSound('snd-chime-2');
         resetPaStatus();
     } else if (key === '5') {
-        playSound('snd-chime-5');
+        // button bgm 재생 후 0.5초 뒤에 five bgm 재생
+        setTimeout(() => {
+            playSound('snd-five-bgm');
+        }, 500);
         resetPaStatus();
     } else {
         playSound('snd-click');
@@ -30,12 +39,14 @@ function resetPaStatus() {
 }
 
 function resetAll() {
+    playSound('snd-bgm'); // button bgm 재생
     playSound('snd-click'); // 리셋 버튼 클릭음
     resetPaStatus();
     stopPA();
 }
 
 async function startPA() {
+    playSound('snd-bgm'); // button bgm 재생
     playSound('snd-click'); // PTT 누를 때 즉시 클릭음
 
     if (!isPaMode) return;
