@@ -8,7 +8,7 @@
         /* 1. 전체 배경 */
         body {
             background-image: url('737background.png');
-            background-size: 600px 1000px; /* 요청하신 대로 가로 길이를 100px 넓힘 (500px -> 600px) */
+            background-size: 100% auto; /* 가로 너비에 맞춤 */
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
@@ -181,8 +181,8 @@
         /* 4. 홈 버튼 (초기화면으로 돌아가기) */
         .home-btn {
             position: fixed;
-            bottom: 50px;
-            left: calc(50% + 180px); /* 737background(500px)의 오른쪽 끝 부분 근처로 이동 */
+            bottom: 30px; /* 위치 상향 조정 */
+            right: 20px; /* 우측으로 고정 */
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -242,6 +242,26 @@
             gap: 5px; /* 로고와 텍스트 사이 간격 */
         }
         .footer-logo img { height: 60px; opacity: 0.8; }
+
+        /* 모바일 대응 미디어 쿼리 */
+        @media (max-width: 600px) {
+            body {
+                background-size: contain; /* 작은 화면에서는 전체 이미지가 보이도록 */
+            }
+            .handset-body {
+                transform: translateY(100vh) scale(0.85); /* 모바일에서는 약간 축소 */
+            }
+            .handset-body.active {
+                transform: translateY(0) scale(0.85);
+            }
+            .footer-info {
+                bottom: 10px;
+                font-size: 9px;
+            }
+            .footer-logo img {
+                height: 40px;
+            }
+        }
 
     </style>
 </head>
