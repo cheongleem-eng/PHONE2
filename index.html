@@ -8,7 +8,7 @@
         /* 1. 전체 배경 */
         body {
             background-image: url('737background.png');
-            background-size: 600px 1000px; /* 세로형으로 고정하여 화면 깨짐 방지 */
+            background-size: 600px 1000px; 
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
@@ -26,14 +26,14 @@
         /* 2. 호출 버튼 (CALL) */
         .call-btn-container {
             position: absolute;
-            top: 40%; /* 43%에서 40%로 상향 조정 */
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 100;
             transition: opacity 0.5s;
         }
         .call-btn {
-            background: radial-gradient(circle, #ff8c00, #ff6600); /* 제주항공 주황색 */
+            background: radial-gradient(circle, #ff8c00, #ff6600);
             border: 4px solid #fff;
             width: 130px;
             height: 130px;
@@ -45,7 +45,7 @@
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.4), 0 0 40px rgba(255, 102, 0, 0.6);
             animation: pulse 2s infinite;
             transition: transform 0.2s, opacity 0.3s;
-            opacity: 0.8; /* 요청하신 불투명도 적용 */
+            opacity: 0.8;
         }
         .call-btn:hover {
             transform: scale(1.05);
@@ -61,8 +61,8 @@
         /* 3. 인터폰 본체 디자인 */
         .handset-body {
             background-color: #838383;
-            width: 155px; /* 인터폰 너비 축소 */
-            height: 560px; /* 인터폰 높이 축소 */
+            width: 155px;
+            height: 560px;
             border-radius: 40px;
             box-shadow: 20px 20px 60px rgba(0,0,0,0.8), inset -2px -2px 5px rgba(255,255,255,0.2);
             display: flex;
@@ -71,8 +71,6 @@
             padding: 25px 10px;
             border: 4px solid #6a6a6a;
             box-sizing: border-box;
-            
-            /* 초기 상태: 투명하게 대기 (올라오는 효과 제거) */
             position: relative;
             z-index: 50;
             opacity: 0;
@@ -84,13 +82,12 @@
             pointer-events: auto;
         }
 
-        /* 상단 귀 대는 부분 (듣는 곳) */
         .earpiece-area {
-            width: 80px; /* 크기 축소 */
+            width: 80px;
             height: 80px;
             background: #6a6a6a;
-            border-radius: 50%; /* 원형 유지 */
-            border: 3px solid #777; /* 테두리 추가로 명확한 원형 강조 */
+            border-radius: 50%;
+            border: 3px solid #777;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -104,7 +101,6 @@
         }
         .hole { width: 5px; height: 5px; background: #222; border-radius: 50%; }
 
-        /* 정보 패널 */
         .info-panel {
             width: 90%;
             background: rgba(0,0,0,0.2);
@@ -116,11 +112,10 @@
         .info-text { font-size: 8px; color: #ccc; font-family: monospace; }
         .sn-sticker { background: #eee; color: #000; font-size: 9px; padding: 1px 8px; font-weight: bold; margin: 3px 0; display: inline-block;}
 
-        /* 키패드 */
         .keypad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px; /* 간격 축소 */
+            gap: 8px;
             margin-bottom: 25px;
         }
         .key {
@@ -129,10 +124,10 @@
             color: white;
             cursor: pointer;
             box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-            width: 32px; /* 버튼 크기 축소 */
+            width: 32px;
             height: 32px;
             border-radius: 50%;
-            font-size: 14px; /* 글자 크기 축소 */
+            font-size: 14px;
             font-weight: bold;
             display: flex;
             justify-content: center;
@@ -140,11 +135,10 @@
         }
         .key:active { transform: scale(0.95); background: #222; }
 
-        /* PTT 버튼 */
         .ptt-area { width: 85%; margin-bottom: 20px; }
         .ptt-btn {
             width: 100%;
-            height: 55px; /* 높이 약간 축소 */
+            height: 55px;
             border-radius: 28px;
             display: flex;
             flex-direction: column;
@@ -154,129 +148,97 @@
             color: white;
             border: 2px solid #444;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .ptt-btn.active-mode { border: 2px solid #fff; box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+        .ptt-btn.active-mode { 
+            border: 2px solid #ff8c00; 
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5); 
+        }
         .pa-text { font-size: 7px; margin-bottom: 2px; color: #bbb; }
         .ptt-text { font-size: 11px; font-weight: bold; }
 
-        /* 리셋 버튼 */
-        .reset-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 6px; /* 더 작게 수정 */
-            font-weight: bold;
-            background: #444;
-            color: #ccc;
-            border: 1px solid #222;
-            cursor: pointer;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-            line-height: 1;
-            transition: transform 0.05s, background 0.05s;
-        }
-        .reset-btn:active { transform: scale(0.95); background: #222; }
-
-        /* 4. 홈 버튼 (초기화면으로 돌아가기) */
-        .home-btn {
+        /* PA 통합 제어 패널 스타일 */
+        .pa-panel {
             position: fixed;
-            bottom: 30px; /* 위치 상향 조정 */
-            right: 20px; /* 우측으로 고정 */
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #ff8c00, #ff6600); /* 제주항공 주황색 통일 */
-            border: 2px solid white;
+            top: 20px;
+            right: -380px;
+            width: 340px;
+            background: rgba(30, 30, 30, 0.95);
+            border: 2px solid #ff8c00;
+            border-radius: 15px;
+            padding: 20px;
             color: white;
-            font-size: 28px;
-            cursor: pointer;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            transition: transform 0.2s, background 0.3s, opacity 0.3s;
-            line-height: 1;
+            z-index: 2000;
+            transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: -5px 5px 20px rgba(0,0,0,0.5);
         }
-        .home-btn:hover {
-            transform: scale(1.1);
-            background: radial-gradient(circle, #ffa033, #ff7700);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        .pa-panel.show { right: 20px; }
+        .pa-header {
+            font-size: 16px; font-weight: bold; color: #ff8c00;
+            margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .home-btn:active {
-            transform: scale(0.9);
+        .status-badge {
+            background: #ff0000; color: white; padding: 2px 8px; border-radius: 10px;
+            font-size: 10px; display: none; animation: blink 1s infinite;
         }
+        @keyframes blink { 50% { opacity: 0; } }
+        .pa-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tab-btn {
+            flex: 1; padding: 8px 4px; background: #444; border: none;
+            color: white; border-radius: 5px; cursor: pointer; font-size: 11px;
+            transition: background 0.2s;
+        }
+        .tab-btn.active { background: #ff8c00; font-weight: bold; }
+        .pa-content {
+            background: #222; padding: 15px; border-radius: 10px;
+            font-size: 13px; line-height: 1.6; min-height: 150px;
+            white-space: pre-wrap; border: 1px solid #333;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .mode-title { color: #aaa; font-size: 11px; margin-bottom: 8px; text-align: center; }
 
-        /* 하단 마이크 부분 (말하는 곳) */
+        .reset-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            font-size: 6px; font-weight: bold; background: #444;
+            color: #ccc; border: 1px solid #222; cursor: pointer;
+            margin-bottom: 20px; display: flex; justify-content: center;
+            align-items: center; padding: 0; line-height: 1;
+        }
+        .home-btn {
+            position: fixed; bottom: 30px; right: 20px;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: radial-gradient(circle, #ff8c00, #ff6600);
+            border: 2px solid white; color: white; font-size: 28px;
+            cursor: pointer; display: none; justify-content: center;
+            align-items: center; z-index: 1000;
+        }
         .mouthpiece-area {
-            width: 60px;
-            height: 60px;
-            background: #6a6a6a;
-            border-radius: 50%; /* 완전한 원형 */
-            border: 3px solid #777;
+            width: 60px; height: 60px; background: #6a6a6a;
+            border-radius: 50%; border: 3px solid #777;
             box-shadow: inset 5px 5px 15px rgba(0,0,0,0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
         }
         .mesh-pattern {
             width: 100%; height: 100%; background-color: #333;
             background-image: radial-gradient(#555 1.5px, transparent 1.5px);
             background-size: 4px 4px;
         }
-
-        /* 푸터 정보 */
         .footer-info {
-            position: absolute;
-            bottom: 60px; /* 기존 20px에서 상향 조정하여 그림 하단에 위치 */
-            width: 100%;
-            display: flex;
-            flex-direction: column; /* 세로 정렬 */
-            align-items: center; /* 가로 중앙 정렬 */
-            pointer-events: none;
-            color: rgba(255,255,255,0.4);
-            font-size: 11px;
-            font-weight: bold;
-            gap: 5px; /* 로고와 텍스트 사이 간격 */
+            position: absolute; bottom: 60px; width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            pointer-events: none; color: rgba(255,255,255,0.4);
+            font-size: 11px; font-weight: bold; gap: 5px;
         }
         .footer-logo img { height: 60px; opacity: 0.8; }
-
-        /* 모바일 대응 미디어 쿼리 */
-        @media (max-width: 600px) {
-            body {
-                background-attachment: scroll; /* 모바일에서 fixed 속성으로 인한 이미지 깨짐 방지 */
-                background-size: 100% 100%; /* 가로세로 모두 화면에 꽉 차도록 수정 */
-                background-position: center top; /* 이미지를 상단 끝에 밀착 */
-            }
-            .handset-body {
-                transform: scale(0.85); /* 모바일 축소 비율 유지 */
-            }
-            .handset-body.active {
-                transform: scale(0.85);
-            }
-            .footer-info {
-                bottom: 50px; /* 모바일에서도 기존 10px에서 50px로 상향 조정 */
-                font-size: 9px;
-            }
-            .footer-logo img {
-                height: 40px;
-            }
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- 중앙 호출 버튼 -->
     <div id="call-btn-container" class="call-btn-container">
         <button class="call-btn" onclick="pickupHandset()">CALL</button>
     </div>
 
-    <!-- 인터폰 본체 -->
     <div id="interphone" class="handset-body">
         <div class="earpiece-area">
             <div class="speaker-holes">
@@ -285,13 +247,11 @@
                 <div class="hole"></div><div class="hole"></div><div class="hole"></div>
             </div>
         </div>
-
         <div class="info-panel">
             <div class="info-text">285W0024-23M MOD NONE</div>
             <div class="sn-sticker">S/N F58930</div>
             <div class="info-text">BAE SYSTEMS</div>
         </div>
-
         <div class="keypad">
             <button class="key" onclick="handleKeyPress('1')">1</button>
             <button class="key" onclick="handleKeyPress('2')">2</button>
@@ -306,31 +266,43 @@
             <button class="key" onclick="handleKeyPress('0')">0</button>
             <button class="key" onclick="handleKeyPress('#')">#</button>
         </div>
-
         <div class="ptt-area">
             <button id="ptt-btn" class="ptt-btn" onmousedown="startPA()" onmouseup="stopPA()">
                 <div class="pa-text">PASSENGER ADDRESS</div>
                 <div class="ptt-text">PUSH TO TALK</div>
             </button>
         </div>
-
         <button class="reset-btn" onclick="resetAll()">RESET</button>
+        <div class="mouthpiece-area"><div class="mesh-pattern"></div></div>
+    </div>
 
-        <div class="mouthpiece-area">
-            <div class="mesh-pattern"></div>
+    <button id="home-btn" class="home-btn" onclick="goHome()">↺</button>
+
+    <!-- PA 통합 제어 패널 -->
+    <div id="pa-panel" class="pa-panel">
+        <div class="pa-header">
+            <span>PASSENGER ADDRESS</span>
+            <span id="on-air-badge" class="status-badge">ON AIR</span>
+        </div>
+        <div class="pa-tabs">
+            <button id="tab-gen" class="tab-btn active" onclick="switchPAMode('general')">일반 방송</button>
+            <button id="tab-t1" class="tab-btn" onclick="switchPAMode('t1')">난기류 1</button>
+            <button id="tab-t2" class="tab-btn" onclick="switchPAMode('t2')">난기류 2</button>
+        </div>
+        <div id="pa-content" class="pa-content">
+            <div id="mode-desc" class="mode-title">GENERAL PA MODE</div>
+            <div id="script-text" style="text-align: center;">자유롭게 기내 방송을 실시하십시오.</div>
+        </div>
+        <div style="margin-top: 15px; font-size: 10px; color: #888; text-align: center;">
+            PTT를 누르면 마이크가 활성화됩니다.
         </div>
     </div>
 
-    <!-- 홈 버튼 (인터폰 밖으로 이동하여 화면 구석에 고정) -->
-    <button id="home-btn" class="home-btn" onclick="goHome()">↺</button>
-
-    <!-- 푸터 로고 및 텍스트 -->
     <div class="footer-info">
         <div class="footer-logo"><img src="logo.png" alt="Logo"></div>
         <div>JEJU AIR CABIN TRAINING TEAM · 임청</div>
     </div>
 
-    <!-- 오디오 -->
     <audio id="snd-bgm" src="button_bgm.mp3" preload="auto"></audio>
     <audio id="snd-five-bgm" src="five_bgm.mp3" preload="auto"></audio>
     <audio id="snd-two-bgm" src="two_bgm.mp3" preload="auto"></audio>
@@ -345,6 +317,34 @@
         let key2ClickCount = 0;
         let key2Timer = null;
 
+        const scripts = {
+            'general': {
+                title: "GENERAL PA MODE",
+                text: "자유롭게 기내 방송을 실시하십시오.\n\n(방송문 없이 마이크 기능만 사용 가능)"
+            },
+            't1': {
+                title: "TURBULENCE SCENARIO 1",
+                text: "난기류 1번 방송문이 여기에 표시됩니다.\n(내용을 알려주시면 업데이트 하겠습니다!)"
+            },
+            't2': {
+                title: "TURBULENCE SCENARIO 2",
+                text: "난기류 2번 방송문이 여기에 표시됩니다.\n(강한 난기류 상황 연습용입니다.)"
+            }
+        };
+
+        function switchPAMode(mode) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if(mode === 'general') document.getElementById('tab-gen').classList.add('active');
+            else if(mode === 't1') document.getElementById('tab-t1').classList.add('active');
+            else if(mode === 't2') document.getElementById('tab-t2').classList.add('active');
+
+            document.getElementById('mode-desc').innerText = scripts[mode].title;
+            document.getElementById('script-text').innerText = scripts[mode].text;
+            document.getElementById('script-text').style.textAlign = (mode === 'general' ? 'center' : 'left');
+            
+            playSound('snd-bgm');
+        }
+
         function pickupHandset() {
             document.getElementById('call-btn-container').style.opacity = '0';
             setTimeout(() => {
@@ -357,164 +357,95 @@
 
         function playSound(id) {
             const snd = document.getElementById(id);
-            if (snd) {
-                snd.currentTime = 0;
-                snd.play().catch(e => console.log("Audio Play Error:", e));
-            }
+            if (snd) { snd.currentTime = 0; snd.play().catch(e => {}); }
         }
 
         function handleKeyPress(key) {
             playSound('snd-bgm');
-            
-            if (key === '5') {
-                const t = setTimeout(() => {
-                    const snd = document.getElementById('snd-five-bgm');
-                    if (snd) {
-                        snd.currentTime = 0;
-                        snd.play().catch(e => console.log("Audio Play Error:", e));
-                        snd.onended = () => {
-                            const t2 = setTimeout(() => playSound('snd-crew'), 500);
-                            soundTimeouts.push(t2);
-                        };
-                    }
-                }, 300);
-                soundTimeouts.push(t);
-            } else if (key === '2') {
-                key2ClickCount++;
-                if (key2ClickCount === 1) {
-                    key2Timer = setTimeout(() => {
-                        // 싱글 클릭 처리
-                        const t = setTimeout(() => {
-                            const snd = document.getElementById('snd-two-bgm');
-                            if (snd) {
-                                snd.currentTime = 0;
-                                snd.play().catch(e => console.log("Audio Play Error:", e));
-                                snd.onended = () => {
-                                    const t2 = setTimeout(() => {
-                                        const sndTwo = document.getElementById('snd-two');
-                                        if (sndTwo) {
-                                            sndTwo.playbackRate = 0.9;
-                                            playSound('snd-two');
-                                        }
-                                    }, 500);
-                                    soundTimeouts.push(t2);
-                                };
-                            }
-                        }, 300);
-                        soundTimeouts.push(t);
-                        key2ClickCount = 0;
-                    }, 1000); // 1000ms(1초) 이내에 다시 누르면 더블 클릭으로 간주
-                } else if (key2ClickCount === 2) {
-                    clearTimeout(key2Timer);
-                    // 더블 클릭 처리
-                    const t = setTimeout(() => {
-                        const snd = document.getElementById('snd-two-bgm');
-                        if (snd) {
-                            snd.currentTime = 0;
-                            snd.play().catch(e => console.log("Audio Play Error:", e));
-                            snd.onended = () => {
-                                const t2 = setTimeout(() => {
-                                    const sndTwo2 = document.getElementById('snd-two2');
-                                    if (sndTwo2) {
-                                        sndTwo2.playbackRate = 0.9;
-                                        playSound('snd-two2');
-                                    }
-                                }, 500);
-                                soundTimeouts.push(t2);
-                            };
-                        }
-                    }, 300);
-                    soundTimeouts.push(t);
-                    key2ClickCount = 0;
-                }
-            }
-
             if (key === '8') {
                 isPaMode = true;
                 document.getElementById('ptt-btn').classList.add('active-mode');
-            } else if (key !== '2') { // 2번 키가 아닐 때만 PA 모드 해제 (2번은 클릭 카운트 때문에 별도 처리)
-                isPaMode = false;
-                document.getElementById('ptt-btn').classList.remove('active-mode');
+                document.getElementById('pa-panel').classList.add('show');
+                switchPAMode('general'); // 기본적으로 일반 방송 모드로 활성화
+            } else {
+                if (key !== '2' && key !== '5') {
+                    isPaMode = false;
+                    document.getElementById('ptt-btn').classList.remove('active-mode');
+                    document.getElementById('pa-panel').classList.remove('show');
+                }
+                
+                if (key === '5') {
+                    const t = setTimeout(() => {
+                        const snd = document.getElementById('snd-five-bgm');
+                        if (snd) {
+                            snd.play();
+                            snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-crew'), 500)); };
+                        }
+                    }, 300);
+                    soundTimeouts.push(t);
+                } else if (key === '2') {
+                    key2ClickCount++;
+                    if (key2ClickCount === 1) {
+                        key2Timer = setTimeout(() => {
+                            soundTimeouts.push(setTimeout(() => {
+                                const snd = document.getElementById('snd-two-bgm');
+                                if (snd) { snd.play(); snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-two'), 500)); }; }
+                            }, 300));
+                            key2ClickCount = 0;
+                        }, 1000);
+                    } else if (key2ClickCount === 2) {
+                        clearTimeout(key2Timer);
+                        soundTimeouts.push(setTimeout(() => {
+                            const snd = document.getElementById('snd-two-bgm');
+                            if (snd) { snd.play(); snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-two2'), 500)); }; }
+                        }, 300));
+                        key2ClickCount = 0;
+                    }
+                }
             }
         }
 
-        function resetAll() {
-            stopAllSounds();
+        async function startPA() {
+            if (!isPaMode) return;
             playSound('snd-bgm');
+            document.getElementById('on-air-badge').style.display = 'inline';
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
+            try {
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                micSource = audioCtx.createMediaStreamSource(micStream);
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass'; filter.frequency.value = 1500; filter.Q.value = 1.0;
+                delayNode = audioCtx.createDelay(); delayNode.delayTime.value = 0.15; 
+                feedbackGain = audioCtx.createGain(); feedbackGain.gain.value = 0.3; 
+                micSource.connect(filter); filter.connect(audioCtx.destination);
+                filter.connect(delayNode); delayNode.connect(feedbackGain); feedbackGain.connect(filter);
+            } catch (err) { console.error(err); }
+        }
+
+        function stopPA() {
+            document.getElementById('on-air-badge').style.display = 'none';
+            if (micStream) { micStream.getTracks().forEach(track => track.stop()); micStream = null; }
+        }
+
+        function resetAll() {
+            soundTimeouts.forEach(t => clearTimeout(t));
             isPaMode = false;
             document.getElementById('ptt-btn').classList.remove('active-mode');
-            key2ClickCount = 0;
-            if (key2Timer) clearTimeout(key2Timer);
+            document.getElementById('pa-panel').classList.remove('show');
             stopPA();
+            playSound('snd-bgm');
         }
 
         function goHome() {
             resetAll();
             document.getElementById('home-btn').style.display = 'none';
             document.getElementById('interphone').classList.remove('active');
-            
             setTimeout(() => {
-                const callBtnContainer = document.getElementById('call-btn-container');
-                callBtnContainer.style.display = 'block';
-                setTimeout(() => {
-                    callBtnContainer.style.opacity = '1';
-                }, 50);
+                document.getElementById('call-btn-container').style.display = 'block';
+                document.getElementById('call-btn-container').style.opacity = '1';
             }, 600);
-        }
-
-        function stopAllSounds() {
-            // Clear pending timeouts
-            soundTimeouts.forEach(t => clearTimeout(t));
-            soundTimeouts = [];
-
-            ['snd-bgm', 'snd-five-bgm', 'snd-two-bgm', 'snd-two', 'snd-two2', 'snd-crew'].forEach(id => {
-                const snd = document.getElementById(id);
-                if (snd) {
-                    snd.pause();
-                    snd.currentTime = 0;
-                    snd.onended = null;
-                }
-            });
-        }
-
-        async function startPA() {
-            if (!isPaMode) return;
-            playSound('snd-bgm');
-
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') await audioCtx.resume();
-
-            try {
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                micSource = audioCtx.createMediaStreamSource(micStream);
-                
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.value = 1500;
-                filter.Q.value = 1.0;
-
-                delayNode = audioCtx.createDelay();
-                delayNode.delayTime.value = 0.12; 
-                feedbackGain = audioCtx.createGain();
-                feedbackGain.gain.value = 0.3; 
-
-                micSource.connect(filter);
-                filter.connect(audioCtx.destination);
-                filter.connect(delayNode);
-                delayNode.connect(feedbackGain);
-                feedbackGain.connect(filter);
-            } catch (err) {
-                console.error("Mic Error:", err);
-            }
-        }
-
-        function stopPA() {
-            if (micStream) {
-                micStream.getTracks().forEach(track => track.stop());
-                micStream = null;
-            }
         }
     </script>
 </body>
 </html>
-<!-- redeploy -->
