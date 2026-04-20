@@ -424,7 +424,7 @@
             container.innerHTML = ''; // 초기화
 
             if (mode === 'general') {
-                container.innerHTML = '<p id="gen-text" style="text-align: center;">자유롭게 기내 방송을 실시하십시오.<br><br>(방송문 없이 마이크 기능만 사용 가능)</p>';
+                container.innerHTML = '<p id="gen-text" style="text-align: center; font-size: 10px; color: #aaa; line-height: 1.5;">자유롭게 기내 방송을 실시하십시오.<br><br>(방송문 없이 마이크 기능만 사용 가능)</p>';
                 document.getElementById('pa-nav').style.display = 'none';
             } else {
                 scripts[mode].images.forEach((src, idx) => {
