@@ -161,16 +161,19 @@
         .pa-panel {
             position: fixed;
             top: 20px;
-            right: -380px;
-            width: 340px;
-            background: rgba(30, 30, 30, 0.95);
+            right: -550px; /* 크기 확대에 따라 초기 위치 조정 */
+            width: 500px; /* 이미지 크기에 맞춰 너비 확대 */
+            background: rgba(30, 30, 30, 0.98);
             border: 2px solid #ff8c00;
             border-radius: 15px;
             padding: 20px;
             color: white;
             z-index: 2000;
             transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: -5px 5px 20px rgba(0,0,0,0.5);
+            box-shadow: -5px 5px 30px rgba(0,0,0,0.8);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
         .pa-panel.show { right: 20px; }
         .pa-header {
@@ -185,18 +188,55 @@
         @keyframes blink { 50% { opacity: 0; } }
         .pa-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
         .tab-btn {
-            flex: 1; padding: 8px 4px; background: #444; border: none;
+            flex: 1; padding: 12px 4px; background: #444; border: none;
             color: white; border-radius: 5px; cursor: pointer; font-size: 11px;
             transition: background 0.2s;
+            text-align: center;
         }
         .tab-btn.active { background: #ff8c00; font-weight: bold; }
+        
+        /* 방송문 영역 확대 및 이미지 최적화 */
         .pa-content {
-            background: #222; padding: 15px; border-radius: 10px;
-            font-size: 13px; line-height: 1.6; min-height: 150px;
-            white-space: pre-wrap; border: 1px solid #333;
-            display: flex; flex-direction: column; justify-content: center;
+            background: #222; padding: 10px; border-radius: 10px;
+            border: 1px solid #333;
+            flex-grow: 1;
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: flex-start;
+            overflow: hidden;
+            position: relative;
+            min-height: 400px;
         }
-        .mode-title { color: #aaa; font-size: 11px; margin-bottom: 8px; text-align: center; }
+        .script-img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            display: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .script-img.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 페이지 네비게이션 버튼 */
+        .page-nav {
+            display: flex; justify-content: space-between; width: 100%;
+            margin-top: 15px; gap: 10px;
+        }
+        .nav-btn {
+            background: #555; border: none; color: white;
+            padding: 8px 15px; border-radius: 5px; cursor: pointer;
+            font-size: 12px; font-weight: bold; flex: 1;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background: #777; }
+        .nav-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+        .mode-title { color: #ff8c00; font-size: 12px; margin-bottom: 10px; font-weight: bold; }
 
         .reset-btn {
             width: 40px; height: 40px; border-radius: 50%;
@@ -286,13 +326,22 @@
         </div>
         <div class="pa-tabs">
             <button id="tab-gen" class="tab-btn active" onclick="switchPAMode('general')">일반 방송</button>
-            <button id="tab-t1" class="tab-btn" onclick="switchPAMode('t1')">난기류 1</button>
-            <button id="tab-t2" class="tab-btn" onclick="switchPAMode('t2')">난기류 2</button>
+            <button id="tab-t1" class="tab-btn" onclick="switchPAMode('t1')">Turbulence</button>
+            <button id="tab-t2" class="tab-btn" onclick="switchPAMode('t2')">Turbulence 지속시</button>
         </div>
         <div id="pa-content" class="pa-content">
             <div id="mode-desc" class="mode-title">GENERAL PA MODE</div>
-            <div id="script-text" style="text-align: center;">자유롭게 기내 방송을 실시하십시오.</div>
+            <div id="script-container" style="width: 100%; display: flex; justify-content: center; align-items: center; flex-grow: 1;">
+                <p id="gen-text" style="text-align: center;">자유롭게 기내 방송을 실시하십시오.</p>
+                <!-- 이미지들이 여기에 표시됩니다 -->
+            </div>
         </div>
+        
+        <div id="pa-nav" class="page-nav" style="display: none;">
+            <button id="prev-btn" class="nav-btn" onclick="changePage(-1)">이전 페이지</button>
+            <button id="next-btn" class="nav-btn" onclick="changePage(1)">다음 페이지</button>
+        </div>
+
         <div style="margin-top: 15px; font-size: 10px; color: #888; text-align: center;">
             PTT를 누르면 마이크가 활성화됩니다.
         </div>
@@ -317,32 +366,71 @@
         let key2ClickCount = 0;
         let key2Timer = null;
 
+        let currentMode = 'general';
+        let currentPage = 0;
+
         const scripts = {
             'general': {
                 title: "GENERAL PA MODE",
-                text: "자유롭게 기내 방송을 실시하십시오.\n\n(방송문 없이 마이크 기능만 사용 가능)"
+                images: []
             },
             't1': {
-                title: "TURBULENCE SCENARIO 1",
-                text: "난기류 1번 방송문이 여기에 표시됩니다.\n(내용을 알려주시면 업데이트 하겠습니다!)"
+                title: "TURBULENCE SCENARIO",
+                images: ["T1.png", "T1-1.png"]
             },
             't2': {
-                title: "TURBULENCE SCENARIO 2",
-                text: "난기류 2번 방송문이 여기에 표시됩니다.\n(강한 난기류 상황 연습용입니다.)"
+                title: "TURBULENCE CONTINUOUS",
+                images: ["T2.png", "T2-2.png"]
             }
         };
 
         function switchPAMode(mode) {
+            currentMode = mode;
+            currentPage = 0;
+
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if(mode === 'general') document.getElementById('tab-gen').classList.add('active');
-            else if(mode === 't1') document.getElementById('tab-t1').classList.add('active');
-            else if(mode === 't2') document.getElementById('tab-t2').classList.add('active');
+            document.getElementById('tab-' + mode).classList.add('active');
 
             document.getElementById('mode-desc').innerText = scripts[mode].title;
-            document.getElementById('script-text').innerText = scripts[mode].text;
-            document.getElementById('script-text').style.textAlign = (mode === 'general' ? 'center' : 'left');
+            
+            const container = document.getElementById('script-container');
+            container.innerHTML = ''; // 초기화
+
+            if (mode === 'general') {
+                container.innerHTML = '<p id="gen-text" style="text-align: center;">자유롭게 기내 방송을 실시하십시오.<br><br>(방송문 없이 마이크 기능만 사용 가능)</p>';
+                document.getElementById('pa-nav').style.display = 'none';
+            } else {
+                scripts[mode].images.forEach((src, idx) => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = 'script-img' + (idx === 0 ? ' active' : '');
+                    img.id = 'page-' + idx;
+                    container.appendChild(img);
+                });
+                document.getElementById('pa-nav').style.display = 'flex';
+                updateNavButtons();
+            }
             
             playSound('snd-bgm');
+        }
+
+        function changePage(delta) {
+            const maxPages = scripts[currentMode].images.length;
+            const newPage = currentPage + delta;
+
+            if (newPage >= 0 && newPage < maxPages) {
+                document.getElementById('page-' + currentPage).classList.remove('active');
+                currentPage = newPage;
+                document.getElementById('page-' + currentPage).classList.add('active');
+                updateNavButtons();
+                playSound('snd-bgm');
+            }
+        }
+
+        function updateNavButtons() {
+            const maxPages = scripts[currentMode].images.length;
+            document.getElementById('prev-btn').disabled = (currentPage === 0);
+            document.getElementById('next-btn').disabled = (currentPage === maxPages - 1);
         }
 
         function pickupHandset() {
@@ -366,7 +454,7 @@
                 isPaMode = true;
                 document.getElementById('ptt-btn').classList.add('active-mode');
                 document.getElementById('pa-panel').classList.add('show');
-                switchPAMode('general'); // 기본적으로 일반 방송 모드로 활성화
+                switchPAMode('general');
             } else {
                 if (key !== '2' && key !== '5') {
                     isPaMode = false;
