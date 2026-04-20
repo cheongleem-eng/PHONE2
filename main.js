@@ -1,5 +1,5 @@
 let isPaMode = false;
-let audioCtx, micSource, delayNode, feedbackGain;
+let audioCtx, micSource, micStream;
 
 function playSound(id) {
     const snd = document.getElementById(id);
@@ -10,14 +10,12 @@ function playSound(id) {
 }
 
 function handleKeyPress(key) {
-    // 모든 버튼 클릭 시 button bgm 재생
     playSound('snd-bgm');
 
     if (key === '2') {
         playSound('snd-chime-2');
         resetPaStatus();
     } else if (key === '5') {
-        // button bgm 재생 후 0.5초 뒤에 five bgm 재생
         setTimeout(() => {
             playSound('snd-five-bgm');
         }, 500);
@@ -39,41 +37,60 @@ function resetPaStatus() {
 }
 
 function resetAll() {
-    playSound('snd-bgm'); // button bgm 재생
-    playSound('snd-click'); // 리셋 버튼 클릭음
+    playSound('snd-bgm');
+    playSound('snd-click');
     resetPaStatus();
     stopPA();
 }
 
 async function startPA() {
-    playSound('snd-bgm'); // button bgm 재생
-    playSound('snd-click'); // PTT 누를 때 즉시 클릭음
-
     if (!isPaMode) return;
+    playSound('snd-bgm');
+    playSound('snd-click');
 
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') await audioCtx.resume();
 
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        micSource = audioCtx.createMediaStreamSource(stream);
-
-        delayNode = audioCtx.createDelay();
-        delayNode.delayTime.value = 0.2; 
+        // 에코 캔슬링 및 노이즈 억제 활성화
+        micStream = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            } 
+        });
         
-        feedbackGain = audioCtx.createGain();
-        feedbackGain.gain.value = 0.4; 
+        micSource = audioCtx.createMediaStreamSource(micStream);
+        
+        // 기내 방송 느낌을 위한 밴드패스 필터
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 1000;
+        filter.Q.value = 0.8;
 
-        micSource.connect(audioCtx.destination);
-        micSource.connect(delayNode);
-        delayNode.connect(feedbackGain);
-        feedbackGain.connect(audioCtx.destination);
+        // 갑작스러운 큰 소리를 방지하는 컴프레서
+        const compressor = audioCtx.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-24, audioCtx.currentTime);
+        compressor.knee.setValueAtTime(40, audioCtx.currentTime);
+        compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
+        compressor.attack.setValueAtTime(0, audioCtx.currentTime);
+        compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+
+        // 연결: 마이크 -> 필터 -> 컴프레서 -> 스피커
+        micSource.connect(filter);
+        filter.connect(compressor);
+        compressor.connect(audioCtx.destination);
     } catch (err) {
         console.error("마이크 오류:", err);
     }
 }
 
 function stopPA() {
+    if (micStream) {
+        micStream.getTracks().forEach(track => track.stop());
+        micStream = null;
+    }
     if (micSource) {
         micSource.disconnect();
         micSource = null;

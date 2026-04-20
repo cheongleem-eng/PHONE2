@@ -577,23 +577,56 @@
             if (!isPaMode) return;
             playSound('snd-bgm');
             document.getElementById('on-air-badge').style.display = 'inline';
+            
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') await audioCtx.resume();
+            
             try {
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                // 에코 캔슬링 및 노이즈 억제 활성화
+                micStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                
                 micSource = audioCtx.createMediaStreamSource(micStream);
+                
+                // 기내 방송 느낌을 위한 필터 (고음과 저음을 살짝 깎음)
                 const filter = audioCtx.createBiquadFilter();
-                filter.type = 'bandpass'; filter.frequency.value = 1500; filter.Q.value = 1.0;
-                delayNode = audioCtx.createDelay(); delayNode.delayTime.value = 0.15; 
-                feedbackGain = audioCtx.createGain(); feedbackGain.gain.value = 0.3; 
-                micSource.connect(filter); filter.connect(audioCtx.destination);
-                filter.connect(delayNode); delayNode.connect(feedbackGain); feedbackGain.connect(filter);
-            } catch (err) { console.error(err); }
+                filter.type = 'bandpass';
+                filter.frequency.value = 1000; // 중심 주파수 조정
+                filter.Q.value = 0.8;
+
+                // 소리 크기를 일정하게 맞추고 찢어지는 소리 방지
+                const compressor = audioCtx.createDynamicsCompressor();
+                compressor.threshold.setValueAtTime(-24, audioCtx.currentTime);
+                compressor.knee.setValueAtTime(40, audioCtx.currentTime);
+                compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
+                compressor.attack.setValueAtTime(0, audioCtx.currentTime);
+                compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+
+                // 연결: 마이크 -> 필터 -> 컴프레서 -> 스피커
+                micSource.connect(filter);
+                filter.connect(compressor);
+                compressor.connect(audioCtx.destination);
+                
+            } catch (err) { 
+                console.error("마이크 연결 오류:", err); 
+            }
         }
 
         function stopPA() {
             document.getElementById('on-air-badge').style.display = 'none';
-            if (micStream) { micStream.getTracks().forEach(track => track.stop()); micStream = null; }
+            if (micStream) { 
+                micStream.getTracks().forEach(track => track.stop()); 
+                micStream = null; 
+            }
+            if (micSource) {
+                micSource.disconnect();
+                micSource = null;
+            }
         }
 
         function resetAll() {
