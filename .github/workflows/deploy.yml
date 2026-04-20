@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
+  workflow_dispatch: # 수동으로 배포를 실행할 수 있는 버튼 추가
 
 permissions:
   contents: read
