@@ -228,15 +228,14 @@
         /* 비상신호 패널 스타일 (가로형) */
         .emergency-panel {
             position: fixed;
-            top: 50%;
-            left: -600px; /* 초기 위치 왼쪽 밖 */
-            transform: translateY(-50%);
-            width: 450px; /* 가로로 길게 */
-            max-width: 90vw;
+            top: 20px; /* 상단으로 이동 */
+            left: -400px; /* 초기 위치 조정 */
+            width: 360px; /* 450px에서 20% 축소 */
+            max-width: 85vw;
             background: rgba(30, 30, 30, 0.98);
-            border: 2px solid #ff0000; /* 비상용이라 빨간색 테두리 */
-            border-radius: 15px;
-            padding: 10px;
+            border: 2px solid #ff0000; 
+            border-radius: 12px;
+            padding: 8px;
             color: white;
             z-index: 2001;
             transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -247,13 +246,13 @@
         }
         .emergency-panel.show { left: 20px; }
         .emergency-header {
-            font-size: 14px; font-weight: bold; color: #ff3333;
-            margin-bottom: 8px; border-bottom: 1px solid #444; padding-bottom: 5px;
+            font-size: 13px; font-weight: bold; color: #ff3333;
+            margin-bottom: 6px; border-bottom: 1px solid #444; padding-bottom: 4px;
             text-align: center;
         }
         .emergency-content {
-            background: #fff; /* 이미지가 잘 보이도록 배경 흰색 */
-            padding: 5px; border-radius: 5px;
+            background: #fff; 
+            padding: 4px; border-radius: 5px;
             overflow: auto;
         }
         .emergency-img {
@@ -269,12 +268,11 @@
             .tab-btn { font-size: 8px; padding: 4px 1px; }
 
             .emergency-panel { 
-                width: 95vw; 
-                left: -100vw; 
-                top: 50%; 
-                transform: translateY(-50%);
+                width: 75vw; /* 95vw에서 약 20% 축소 */
+                left: -80vw; 
+                top: 10px; /* 모바일에서도 상단 */
             }
-            .emergency-panel.show { left: 2.5vw; }
+            .emergency-panel.show { left: 5vw; }
         }
 
         @keyframes fadeIn {
