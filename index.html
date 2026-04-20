@@ -162,7 +162,7 @@
             position: fixed;
             top: 20px;
             right: -400px; 
-            width: 280px; /* 기존 500px에서 약 절반으로 축소 */
+            width: 280px; 
             max-width: 85vw;
             background: rgba(30, 30, 30, 0.98);
             border: 2px solid #ff8c00;
@@ -197,7 +197,6 @@
         }
         .tab-btn.active { background: #ff8c00; font-weight: bold; }
         
-        /* 방송문 영역 축소 */
         .pa-content {
             background: #222; padding: 5px; border-radius: 10px;
             border: 1px solid #333;
@@ -221,29 +220,63 @@
             display: none;
             transition: opacity 0.3s ease-in-out;
         }
-
-        /* 모바일용 추가 스타일 */
-        @media (max-width: 600px) {
-            .pa-panel {
-                width: 65vw; /* 화면의 65% 정도로 더 작게 조정 */
-                right: -70vw;
-                top: 10px;
-            }
-            .pa-panel.show {
-                right: 5vw;
-            }
-            .pa-content {
-                min-height: 180px;
-            }
-            .tab-btn {
-                font-size: 8px;
-                padding: 4px 1px;
-            }
-        }
         .script-img.active {
             display: block;
             animation: fadeIn 0.4s ease-in-out;
         }
+
+        /* 비상신호 패널 스타일 (가로형) */
+        .emergency-panel {
+            position: fixed;
+            top: 50%;
+            left: -600px; /* 초기 위치 왼쪽 밖 */
+            transform: translateY(-50%);
+            width: 450px; /* 가로로 길게 */
+            max-width: 90vw;
+            background: rgba(30, 30, 30, 0.98);
+            border: 2px solid #ff0000; /* 비상용이라 빨간색 테두리 */
+            border-radius: 15px;
+            padding: 10px;
+            color: white;
+            z-index: 2001;
+            transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 5px 5px 30px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .emergency-panel.show { left: 20px; }
+        .emergency-header {
+            font-size: 14px; font-weight: bold; color: #ff3333;
+            margin-bottom: 8px; border-bottom: 1px solid #444; padding-bottom: 5px;
+            text-align: center;
+        }
+        .emergency-content {
+            background: #fff; /* 이미지가 잘 보이도록 배경 흰색 */
+            padding: 5px; border-radius: 5px;
+            overflow: auto;
+        }
+        .emergency-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .pa-panel { width: 65vw; right: -70vw; top: 10px; }
+            .pa-panel.show { right: 5vw; }
+            .pa-content { min-height: 180px; }
+            .tab-btn { font-size: 8px; padding: 4px 1px; }
+
+            .emergency-panel { 
+                width: 95vw; 
+                left: -100vw; 
+                top: 50%; 
+                transform: translateY(-50%);
+            }
+            .emergency-panel.show { left: 2.5vw; }
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -374,6 +407,17 @@
         </div>
     </div>
 
+    <!-- 비상신호 패널 추가 -->
+    <div id="emergency-panel" class="emergency-panel">
+        <div class="emergency-header">비상신호 (Emergency Signals)</div>
+        <div class="emergency-content">
+            <img src="B.png" class="emergency-img" alt="Emergency Signal">
+        </div>
+        <div style="margin-top: 8px; font-size: 9px; color: #888; text-align: center;">
+            2번 버튼을 눌러 활성화되었습니다.
+        </div>
+    </div>
+
     <div class="footer-info">
         <div class="footer-logo"><img src="logo.png" alt="Logo"></div>
         <div>JEJU AIR CABIN TRAINING TEAM · 임청</div>
@@ -416,12 +460,15 @@
             currentPage = 0;
 
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('tab-' + mode).classList.add('active');
+            document.getElementById('tab-general').classList.remove('active'); // 탭 활성화 버그 수정 보완
+            
+            if(mode === 'general') document.getElementById('tab-general').classList.add('active');
+            else document.getElementById('tab-' + mode).classList.add('active');
 
             document.getElementById('mode-desc').innerText = scripts[mode].title;
             
             const container = document.getElementById('script-container');
-            container.innerHTML = ''; // 초기화
+            container.innerHTML = ''; 
 
             if (mode === 'general') {
                 container.innerHTML = '<p id="gen-text" style="text-align: center; font-size: 10px; color: #aaa; line-height: 1.5;">자유롭게 기내 방송을 실시하십시오.<br><br>(방송문 없이 마이크 기능만 사용 가능)</p>';
@@ -481,12 +528,38 @@
                 isPaMode = true;
                 document.getElementById('ptt-btn').classList.add('active-mode');
                 document.getElementById('pa-panel').classList.add('show');
+                document.getElementById('emergency-panel').classList.remove('show'); // 비상신호 닫기
                 switchPAMode('general');
+            } else if (key === '2') {
+                // 비상신호 패널 표시
+                document.getElementById('emergency-panel').classList.add('show');
+                document.getElementById('pa-panel').classList.remove('show'); // PA 패널 닫기
+                isPaMode = false;
+                document.getElementById('ptt-btn').classList.remove('active-mode');
+
+                key2ClickCount++;
+                if (key2ClickCount === 1) {
+                    key2Timer = setTimeout(() => {
+                        soundTimeouts.push(setTimeout(() => {
+                            const snd = document.getElementById('snd-two-bgm');
+                            if (snd) { snd.play(); snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-two'), 500)); }; }
+                        }, 300));
+                        key2ClickCount = 0;
+                    }, 1000);
+                } else if (key2ClickCount === 2) {
+                    clearTimeout(key2Timer);
+                    soundTimeouts.push(setTimeout(() => {
+                        const snd = document.getElementById('snd-two-bgm');
+                        if (snd) { snd.play(); snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-two2'), 500)); }; }
+                    }, 300));
+                    key2ClickCount = 0;
+                }
             } else {
-                if (key !== '2' && key !== '5') {
+                if (key !== '5') {
                     isPaMode = false;
                     document.getElementById('ptt-btn').classList.remove('active-mode');
                     document.getElementById('pa-panel').classList.remove('show');
+                    document.getElementById('emergency-panel').classList.remove('show');
                 }
                 
                 if (key === '5') {
@@ -498,24 +571,6 @@
                         }
                     }, 300);
                     soundTimeouts.push(t);
-                } else if (key === '2') {
-                    key2ClickCount++;
-                    if (key2ClickCount === 1) {
-                        key2Timer = setTimeout(() => {
-                            soundTimeouts.push(setTimeout(() => {
-                                const snd = document.getElementById('snd-two-bgm');
-                                if (snd) { snd.play(); snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-two'), 500)); }; }
-                            }, 300));
-                            key2ClickCount = 0;
-                        }, 1000);
-                    } else if (key2ClickCount === 2) {
-                        clearTimeout(key2Timer);
-                        soundTimeouts.push(setTimeout(() => {
-                            const snd = document.getElementById('snd-two-bgm');
-                            if (snd) { snd.play(); snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-two2'), 500)); }; }
-                        }, 300));
-                        key2ClickCount = 0;
-                    }
                 }
             }
         }
@@ -548,6 +603,7 @@
             isPaMode = false;
             document.getElementById('ptt-btn').classList.remove('active-mode');
             document.getElementById('pa-panel').classList.remove('show');
+            document.getElementById('emergency-panel').classList.remove('show');
             stopPA();
             playSound('snd-bgm');
         }
