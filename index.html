@@ -161,24 +161,26 @@
         .pa-panel {
             position: fixed;
             top: 20px;
-            right: -550px; /* 크기 확대에 따라 초기 위치 조정 */
-            width: 500px; /* 이미지 크기에 맞춰 너비 확대 */
+            right: -600px; /* 초기 위치 더 멀리 */
+            width: 500px;
+            max-width: 90vw; /* 모바일 대응: 화면 너비의 90% 제한 */
             background: rgba(30, 30, 30, 0.98);
             border: 2px solid #ff8c00;
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             color: white;
             z-index: 2000;
             transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: -5px 5px 30px rgba(0,0,0,0.8);
-            max-height: 90vh;
+            max-height: 85vh;
             display: flex;
             flex-direction: column;
+            box-sizing: border-box;
         }
-        .pa-panel.show { right: 20px; }
+        .pa-panel.show { right: 10px; } /* 모바일에서 여백 최소화 */
         .pa-header {
-            font-size: 16px; font-weight: bold; color: #ff8c00;
-            margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;
+            font-size: 15px; font-weight: bold; color: #ff8c00;
+            margin-bottom: 12px; border-bottom: 1px solid #444; padding-bottom: 8px;
             display: flex; justify-content: space-between; align-items: center;
         }
         .status-badge {
@@ -186,10 +188,10 @@
             font-size: 10px; display: none; animation: blink 1s infinite;
         }
         @keyframes blink { 50% { opacity: 0; } }
-        .pa-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .pa-tabs { display: flex; gap: 5px; margin-bottom: 12px; }
         .tab-btn {
-            flex: 1; padding: 12px 4px; background: #444; border: none;
-            color: white; border-radius: 5px; cursor: pointer; font-size: 11px;
+            flex: 1; padding: 8px 2px; background: #444; border: none;
+            color: white; border-radius: 5px; cursor: pointer; font-size: 10px;
             transition: background 0.2s;
             text-align: center;
         }
@@ -197,28 +199,46 @@
         
         /* 방송문 영역 확대 및 이미지 최적화 */
         .pa-content {
-            background: #222; padding: 10px; border-radius: 10px;
+            background: #222; padding: 8px; border-radius: 10px;
             border: 1px solid #333;
             flex-grow: 1;
             display: flex; flex-direction: column; 
             align-items: center; justify-content: flex-start;
-            overflow-y: auto; /* 내용이 길 경우 세로 스크롤 허용 */
+            overflow-y: auto;
             overflow-x: hidden;
             position: relative;
-            min-height: 450px;
+            min-height: 300px;
             scrollbar-width: thin;
             scrollbar-color: #ff8c00 #222;
         }
-        .pa-content::-webkit-scrollbar { width: 6px; }
+        .pa-content::-webkit-scrollbar { width: 4px; }
         .pa-content::-webkit-scrollbar-thumb { background: #ff8c00; border-radius: 10px; }
 
         .script-img {
             width: 100%;
             height: auto;
-            max-height: none; /* 잘리지 않도록 제한 해제 */
             object-fit: contain;
             display: none;
             transition: opacity 0.3s ease-in-out;
+        }
+
+        /* 모바일용 추가 스타일 */
+        @media (max-width: 600px) {
+            .pa-panel {
+                width: 95vw;
+                right: -100vw;
+                top: 10px;
+            }
+            .pa-panel.show {
+                right: 2.5vw;
+            }
+            .pa-content {
+                min-height: 250px;
+            }
+            .tab-btn {
+                font-size: 9px;
+                padding: 6px 1px;
+            }
         }
         .script-img.active {
             display: block;
