@@ -16,9 +16,7 @@ function handleKeyPress(key) {
         playSound('snd-chime-2');
         resetPaStatus();
     } else if (key === '5') {
-        setTimeout(() => {
-            playSound('snd-five-bgm');
-        }, 500);
+        playSound('snd-five-bgm');
         resetPaStatus();
     } else {
         playSound('snd-click');

@@ -561,14 +561,11 @@
                 }
                 
                 if (key === '5') {
-                    const t = setTimeout(() => {
-                        const snd = document.getElementById('snd-five-bgm');
-                        if (snd) {
-                            snd.play();
-                            snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-crew'), 500)); };
-                        }
-                    }, 300);
-                    soundTimeouts.push(t);
+                    const snd = document.getElementById('snd-five-bgm');
+                    if (snd) {
+                        snd.play();
+                        snd.onended = () => { soundTimeouts.push(setTimeout(() => playSound('snd-crew'), 500)); };
+                    }
                 }
             }
         }
